@@ -29,6 +29,7 @@ void AKart::Tick(float DeltaTime)
 	FQuat delta_rotation(GetActorUpVector(), FMath::DegreesToRadians(rotation_angle));
 	AddActorWorldRotation(delta_rotation, true);
 	ChangeVelocity(DeltaTime);
+	//Drifting the car
 	Velocity = (delta_rotation.operator-(FQuat(GetActorUpVector(),0.1f))).RotateVector(Velocity);
 }
 
