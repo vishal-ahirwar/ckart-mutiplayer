@@ -23,14 +23,22 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FVector Force=GetActorForwardVector()*MaxDrivingForce*Throttle;
+	Force += GetAirResistance();
 	FVector Acceleration = Force / Mass;
 	Velocity = Velocity + Acceleration * DeltaTime;
 	float rotation_angle = this->RotationPerSecond * DeltaTime * SteeringThrottle;
 	FQuat delta_rotation(GetActorUpVector(), FMath::DegreesToRadians(rotation_angle));
+	//Adding rotation 
 	AddActorWorldRotation(delta_rotation, true);
+
+	//updating location
 	ChangeVelocity(DeltaTime);
 	//Drifting the car
-	Velocity = (delta_rotation.operator-(FQuat(GetActorUpVector(),0.1f))).RotateVector(Velocity);
+	if (Velocity.Size() > Drift)
+		Velocity = (delta_rotation.operator-(FQuat(GetActorUpVector() * 0.9, 0.1f))).RotateVector(Velocity);
+	else
+		Velocity = delta_rotation.RotateVector(Velocity);
+
 }
 
 // Called to bind functionality to input
@@ -58,3 +66,8 @@ void AKart::ChangeVelocity(float delta_time)
 	if (hit.IsValidBlockingHit())Velocity = FVector::ZeroVector;
 }
 ;
+FVector AKart::GetAirResistance()const
+{
+
+	return -Velocity.GetSafeNormal()*Velocity.SizeSquared() * DragCoffient;
+};

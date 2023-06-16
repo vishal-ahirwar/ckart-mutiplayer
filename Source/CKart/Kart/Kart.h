@@ -34,6 +34,9 @@ private:
 		float Speed{ 20 };
 
 	UPROPERTY(EditAnyWhere)
+		float DragCoffient{ 16.f };
+
+	UPROPERTY(EditAnyWhere)
 		float MaxDrivingForce{ 100000 };
 
 	float Throttle;
@@ -44,6 +47,8 @@ private:
 
 	UPROPERTY(EditAnyWhere)
 		float Mass{ 4500 };
-	
+	UPROPERTY(EditAnyWhere)
+		float Drift{ 4500 };
 	void ChangeVelocity(float delta_time);
+	FVector GetAirResistance()const;
 };
