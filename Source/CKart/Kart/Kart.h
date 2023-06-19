@@ -26,10 +26,17 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
+	FString get_role_as_string(ENetRole role)const;
 	FVector Velocity{};
+	UFUNCTION(Server, reliable,WithValidation)
+	void Server_MoveForward(float value);
+	UFUNCTION(Server,reliable,WithValidation)
+	void Server_MoveRight(float value);
 
 	void MoveForward(float value);
+
 	void MoveRight(float value);
+
 	UPROPERTY(EditAnyWhere)
 		float Speed{ 20 };
 
@@ -37,13 +44,15 @@ private:
 		float DragCoffient{ 16.f };
 
 	UPROPERTY(EditAnyWhere)
+		float RollingCoffient{ 0.15f };
+	UPROPERTY(EditAnyWhere)
 		float MaxDrivingForce{ 100000 };
 
 	float Throttle;
 	float SteeringThrottle;
 
 	UPROPERTY(EditAnyWhere)
-		float RotationPerSecond{ 90 };
+		float MinRotation{ 10 };
 
 	UPROPERTY(EditAnyWhere)
 		float Mass{ 4500 };
@@ -51,4 +60,6 @@ private:
 		float Drift{ 4500 };
 	void ChangeVelocity(float delta_time);
 	FVector GetAirResistance()const;
+	FVector GetRollingResistance()const;
+	void ApplyRotation(float);
 };
